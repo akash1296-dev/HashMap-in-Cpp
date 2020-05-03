@@ -1,0 +1,128 @@
+*************************HEADER FILE****************************
+
+#include <iostream>
+using namespace std;
+template<typename KEY, typename VAL>
+struct Entry
+{
+	KEY key;
+	VAL value;
+	Entry *next;
+
+	Entry(KEY ke, VAL va)
+	{
+		KEY key = ke;
+		VAL val = va;
+		next = nullptr;
+	}
+};
+
+template<typename KEY, typename VAL>
+class HashTable
+{
+	Entry<KEY, VAL> **table;
+	int size;
+
+public:
+	HashTable(int s = 10)
+	{
+		size = s;
+		table = new Entry<KEY, VAL>*[size];
+		for (int i = 0; i < size; i++)
+		{
+			table[i] = nullptr;
+		}
+	}
+
+
+	int hash(KEY k)
+	{
+		return (k % size);
+	}
+
+	bool put(KEY k, VAL v)
+	{
+		Entry<KEY, VAL> *newNode = new Entry<KEY, VAL>(k, v);
+
+		if (!newNode)
+			return false;
+
+		int offset = hash(k);
+
+		if (table[offset])
+		{
+			newNode->next = table[offset];
+			table[offset] = newNode;
+			return true;
+		}
+		else
+		{
+			table[offset] = newNode;
+			return true;
+		}
+		return false;
+	}
+
+	bool get(KEY k)
+	{
+		int offset = hash(k);
+		Entry<KEY, VAL>* prev;
+
+		for (Entry<KEY, VAL>* current = table[offset];current; prev = current, current = current->next)
+		{
+			if (current->key == k)
+			{
+				if (current = table[offset])
+				{
+					table[offset] = current->next;
+				}
+				else
+				{
+					prev->next = current->next;
+				}
+				delete current;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void print()
+	{
+		for (int offset = 0; offset < size; offset++)
+		{
+			cout << offset << ":   ";
+			for (Entry<KEY, VAL>* current = table[offset]; current; current = current->next)
+			{
+				cout << "[" << current->key << "," << current->value << "]";
+			}
+			cout << endl;
+		}
+	}
+};
+
+*********************MAIN FILE******************************
+
+#include <iostream>
+#include "HashTableHeader.h"
+using namespace std;
+int main()
+{
+	//int key;
+	//int value;
+	HashTable<int, int> *h = new HashTable<int, int>;
+
+	/*while (cout << "Enter key to insert (0 to exit) : ", cin >> key, cout << "Enter value : ", cin >> value, key)
+	{
+		h.put(key, value);
+	}*/
+
+	/*h.put(10, "Aakash");
+	h.put(11, "Aman");
+	h.put(14, "Ajit");
+	h.put(21, "suraj");*/
+
+	h->put(10, 1524);
+
+	h->print();
+}
